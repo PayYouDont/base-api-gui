@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.gospell.drm.base.gui.controller.ApiListController">
+    <center>
+        <VBox fx:id="apiListRoot" style="-fx-padding: 10">
+            <HBox fx:id="textFieldBox" style="-fx-padding: 0 2">
+                <HBox alignment="CENTER" styleClass="text-field-like-border">
+                    <ImageView>
+                        <Image url="@../../../../../icons/search.png"/>
+                    </ImageView>
+                    <TextField fx:id="textField" promptText="关键字/URL" styleClass="no-border-textfield"
+                               HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="searchBtn" text="全部" contentDisplay="RIGHT"
+                            style="-fx-border-width: 0;-fx-background-color: transparent;-fx-pref-width: 80">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@../../../../../icons/dropdown.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+                <Region prefWidth="5"/>
+                <Button fx:id="addBtnXml" style="-fx-background-color: #f78b2b;-fx-pref-width: 28;-fx-pref-height: 28">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@../../../../../icons/add.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+            <ListView fx:id="listView" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent;"/>
+        </VBox>
+    </center>
+</BorderPane>

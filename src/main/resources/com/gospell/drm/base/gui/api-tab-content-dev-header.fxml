@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gospell.drm.base.gui.view.CustomTableView?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      VBox.vgrow="ALWAYS"
+      fx:controller="com.gospell.drm.base.gui.controller.ApiTabContentDevHeaderController">
+    <Accordion fx:id="devAccordion">
+        <panes>
+            <TitledPane text="公共参数(header)">
+                <graphic>
+                    <ImageView fx:id="expandImage">
+                        <Image url="@../../../../../icons/eye-close.png"/>
+                    </ImageView>
+                </graphic>
+                <CustomTableView fx:id="publicHeaderTableView" minHeight="191" maxHeight="191"/>
+            </TitledPane>
+        </panes>
+    </Accordion>
+    <CustomTableView fx:id="publicHeaderCustomTableView" VBox.vgrow="ALWAYS"/>
+    <Region VBox.vgrow="ALWAYS"/>
+</VBox>

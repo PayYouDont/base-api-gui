@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.gospell.drm.base.gui.controller.ApiContentTabPanelController">
+    <center>
+        <TabPane fx:id="tabRoot" HBox.hgrow="ALWAYS" styleClass="custom-tab-pane">
+            <Tab fx:id="addTab" closable="false" disable="true"
+                 style="-fx-pref-width: 30 !important; -fx-pref-height: 30!important;">
+                <graphic>
+                    <Button onMouseClicked="#showApiMenu" alignment="TOP_LEFT"
+                            style="-fx-border-width: 0;-fx-background-color: transparent;-fx-padding: 0">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@../../../../../icons/add-black.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </graphic>
+            </Tab>
+            <Tab fx:id="moreTab" closable="false" disable="true"
+                 style="-fx-pref-width: 30 !important; -fx-pref-height: 30!important;">
+                <graphic>
+                    <Button onMouseClicked="#showApiMenu" alignment="TOP_LEFT"
+                            style="-fx-border-width: 0;-fx-background-color: transparent;-fx-padding: 0">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@../../../../../icons/more.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </graphic>
+            </Tab>
+        </TabPane>
+    </center>
+</BorderPane>

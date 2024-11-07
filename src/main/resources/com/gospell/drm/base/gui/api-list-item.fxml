@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:id="apiListItemRoot"
+            fx:controller="com.gospell.drm.base.gui.controller.ApiListItemController">
+    <HBox fx:id="apiItemHBox">
+        <Label fx:id="apiMethod" style="-fx-padding:0 10;"/>
+        <Label fx:id="apiName"/>
+        <!-- 添加一个不可见的 spacer 或者 Region 来填充中间的空隙 -->
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="tooltipLabel" text="..." HBox.hgrow="ALWAYS"/>
+        <Region prefWidth="10"/>
+    </HBox>
+</AnchorPane>

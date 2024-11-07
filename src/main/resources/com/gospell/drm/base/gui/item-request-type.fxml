@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           styleClass="label-container"
+           fx:controller="com.gospell.drm.base.gui.controller.RequestTypeController">
+    <HBox style="-fx-padding: 0 10">
+        <Label fx:id="label"/>
+    </HBox>
+</StackPane>

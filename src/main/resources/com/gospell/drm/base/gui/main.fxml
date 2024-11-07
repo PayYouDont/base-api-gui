@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.gospell.drm.base.gui.controller.MainController">
+    <center>
+        <VBox alignment="CENTER" spacing="20.0">
+            <HBox fx:id="hBox" VBox.vgrow="ALWAYS">
+                <Pane fx:id="leftPanel" style="-fx-background-color: #f5f7f9;"/>
+                <SplitPane fx:id="rightSplitPanel" HBox.hgrow="ALWAYS">
+                    <Pane fx:id="rightSplitPanelLeft" style="-fx-background-color: #f9fafb;"/>
+                    <Pane fx:id="rightSplitPaneRight" style="-fx-background-color: #f9fafb;"
+                          VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
+                </SplitPane>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

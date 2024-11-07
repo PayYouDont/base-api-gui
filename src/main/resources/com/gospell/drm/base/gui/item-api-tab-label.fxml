@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.gospell.drm.base.gui.controller.ItemApiTabLabelController">
+    <HBox fx:id="hBox" spacing="5" prefWidth="50" prefHeight="30" alignment="CENTER">
+        <Text fx:id="method" styleClass="post"/>
+        <Text fx:id="title" text="新建接口" styleClass="tab-label"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ImageView fx:id="closeBtn" visible="false" style="-fx-pref-width: 20;-fx-pref-height: 20">
+            <Image url="@../../../../../icons/close.png"/>
+        </ImageView>
+    </HBox>
+</AnchorPane>

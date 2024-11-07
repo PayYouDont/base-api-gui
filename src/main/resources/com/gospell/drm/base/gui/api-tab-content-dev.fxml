@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gospell.drm.base.gui.view.DropDownMenuView?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      VBox.vgrow="ALWAYS"
+      fx:controller="com.gospell.drm.base.gui.controller.ApiTabContentDevController">
+    <HBox prefHeight="32">
+        <HBox style="-fx-padding: 4;-fx-background-color: #f2f4f7" HBox.hgrow="ALWAYS">
+            <DropDownMenuView fx:id="reqMethodType" prefWidth="100"
+                              style="-fx-border-width: 0;-fx-background-color: white;"/>
+            <Region prefWidth="5"/>
+            <TextField fx:id="urlText" promptText="请输入URL" style="-fx-max-height: 30;-fx-min-height: 30" HBox.hgrow="ALWAYS"/>
+            <Region prefWidth="5"/>
+            <DropDownMenuView fx:id="httpVersion" styleClass="url-input" prefWidth="90"
+                              style="-fx-background-color: transparent;"/>
+        </HBox>
+        <Region prefWidth="5"/>
+        <Button fx:id="sendBtn" text="发送" prefWidth="80" prefHeight="40"/>
+        <Region prefWidth="5"/>
+        <Button fx:id="saveBtn" text="发送" prefWidth="80" prefHeight="42"/>
+        <Region prefWidth="5"/>
+    </HBox>
+    <Region prefHeight="5"/>
+    <TabPane fx:id="paramTypeTabPane"/>
+    <Region prefHeight="5"/>
+    <SplitPane fx:id="devSplitPane" orientation="VERTICAL" dividerPositions="0.5" VBox.vgrow="ALWAYS">
+        <ScrollPane fitToHeight="true" fitToWidth="true">
+            <BorderPane fx:id="paramBorderPane" style="-fx-padding: 0;-fx-background-color: white" />
+        </ScrollPane>
+        <BorderPane>
+            <center>
+                <Label text="test"/>
+            </center>
+        </BorderPane>
+    </SplitPane>
+</VBox>

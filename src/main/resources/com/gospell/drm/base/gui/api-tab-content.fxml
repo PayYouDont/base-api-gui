@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            style="-fx-background-color: white;"
+            fx:controller="com.gospell.drm.base.gui.controller.ApiContentController">
+    <center>
+        <VBox VBox.vgrow="ALWAYS">
+            <HBox style="-fx-padding: 10">
+                <TabPane fx:id="tabPane" styleClass="api-content-tab-pane" prefHeight="32" prefWidth="315"/>
+            </HBox>
+            <BorderPane fx:id="apiContentItem" style="-fx-padding: 0 10" VBox.vgrow="ALWAYS" />
+        </VBox>
+    </center>
+</BorderPane>

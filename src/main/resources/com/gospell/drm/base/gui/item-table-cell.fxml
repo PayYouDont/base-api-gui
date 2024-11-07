@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gospell.drm.base.gui.view.DropDownMenuView?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      alignment="CENTER"
+      id="tab-cell"
+      fx:controller="com.gospell.drm.base.gui.view.ItemTableCellController">
+    <Region prefWidth="16"/>
+    <CheckBox fx:id="checkBox" visible="false" disable="true"/>
+    <Region prefWidth="2"/>
+    <HBox styleClass="table-cell-edit-text" HBox.hgrow="ALWAYS" alignment="CENTER">
+        <TextField fx:id="textField" text="Accept" styleClass="no-border-textfield" style="-fx-text-alignment: center"
+                   HBox.hgrow="ALWAYS"/>
+    </HBox>
+    <DropDownMenuView fx:id="dropDownMenuView" style="-fx-alignment: center" disable="true" visible="false"/>
+    <Button fx:id="refresh" visible="false" managed="false" style="-fx-background-color: transparent">
+        <graphic>
+            <ImageView>
+                <Image url="@../../../../../icons/refresh.png"/>
+            </ImageView>
+        </graphic>
+    </Button>
+    <Button fx:id="delete" visible="false" managed="false" style="-fx-background-color: transparent">
+        <graphic>
+            <ImageView>
+                <Image url="@../../../../../icons/delete.png"/>
+            </ImageView>
+        </graphic>
+    </Button>
+</HBox>
