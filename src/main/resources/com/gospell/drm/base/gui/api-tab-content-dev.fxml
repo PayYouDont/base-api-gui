@@ -24,7 +24,7 @@
         <Region prefWidth="5"/>
     </HBox>
     <Region prefHeight="5"/>
-    <TabPane fx:id="paramTypeTabPane"/>
+    <TabPane fx:id="paramTypeTabPane" styleClass="dev-tab-pane"/>
     <Region prefHeight="5"/>
     <SplitPane fx:id="devSplitPane" orientation="VERTICAL" dividerPositions="0.5" VBox.vgrow="ALWAYS">
         <ScrollPane fitToHeight="true" fitToWidth="true">
@@ -32,7 +32,10 @@
         </ScrollPane>
         <BorderPane>
             <center>
-                <Label text="test"/>
+                <VBox>
+                    <TabPane fx:id="responseTabPane" styleClass="dev-tab-pane"/>
+                    <BorderPane  fx:id="responseBorderPane"  style="-fx-padding: 0;-fx-background-color: white"/>
+                </VBox>
             </center>
         </BorderPane>
     </SplitPane>

@@ -82,6 +82,7 @@ class ApiDevTableView(private val tableView: CustomTableView<TableCellParams>) {
                         }
                         controller.checkBox.apply {
                             isVisible = true
+                            isManaged = true
                             isDisable = itemData.disable
                             isSelected = itemData.selected
                             selectedProperty().addListener { _, _, newValue ->
@@ -161,10 +162,5 @@ class ApiDevTableView(private val tableView: CustomTableView<TableCellParams>) {
                 }
             }
         }
-    }
-
-    fun getData(): MutableList<TableCellParams> {
-        val items = tableView.items
-        return items.filter { !it.disable }.toMutableList()
     }
 }

@@ -1,5 +1,9 @@
 package com.gospell.drm.base.gui.controller
 
+import cn.hutool.json.JSONObject
+import cn.hutool.json.JSONUtil
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.gospell.drm.base.gui.util.Utils.Companion.findChildren
 import com.gospell.drm.base.gui.util.Utils.Companion.findParent
 import com.gospell.drm.base.gui.util.Utils.Companion.getImage
@@ -7,20 +11,28 @@ import com.gospell.drm.base.gui.util.Utils.Companion.getUrl
 import com.gospell.drm.base.gui.util.Utils.Companion.loadTabContent
 import com.gospell.drm.base.gui.view.*
 import javafx.application.Platform
+import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
+import javafx.concurrent.Worker
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
+import javafx.scene.Node
 import javafx.scene.control.*
 import javafx.scene.control.cell.PropertyValueFactory
+import javafx.scene.control.cell.TreeItemPropertyValueFactory
 import javafx.scene.image.ImageView
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
+import javafx.scene.layout.Pane
 import javafx.scene.text.Text
+import javafx.scene.web.WebView
+import javafx.util.Callback
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 import java.net.http.HttpResponse.BodyHandlers
 import java.util.*
 
@@ -68,7 +80,10 @@ class ApiContentTabPanelController {
     }
 }
 
-class TabInfo(var name: String, var fxml: String, var style: String)
+class TabInfo(var name: String, var fxml: String, var style: String) {
+    var controller: Any? = null
+}
+
 class ApiContentController {
     @FXML
     lateinit var tabPane: TabPane
@@ -89,29 +104,186 @@ class ApiContentController {
     }
 }
 
+class ApiTabContentDevResResultController {
+    @FXML
+    lateinit var dataViewTabPane: TabPane
+
+    @FXML
+    lateinit var dataViewBorderPane: BorderPane
+    private val tabData = mutableListOf<TabInfo>()
+
+    @FXML
+    fun initialize() {
+        tabData.add(TabInfo("美化", "", "-fx-pref-width: 48"))
+        tabData.add(TabInfo("原生", "", "-fx-pref-width: 48"))
+        tabData.add(TabInfo("预览", "", "-fx-pref-width: 48;"))
+        tabData.add(TabInfo("可视化", "", "-fx-pref-width: 56"))
+        //dataViewTabPane.loadTabContent(tabData, dataViewBorderPane)
+        val str =
+            "{\n" +
+                    "  \"name\": \"John Doe\",\n" +
+                    "  \"age\": 30,\n" +
+                    "  \"address\": {\n" +
+                    "    \"street\": \"123 Main St\",\n" +
+                    "    \"city\": \"Anytown\",\n" +
+                    "    \"state\": \"Anystate\",\n" +
+                    "    \"zip\": \"12345\"\n" +
+                    "  },\n" +
+                    "  \"phoneNumbers\": [\n" +
+                    "    { \"type\": \"home\", \"number\": \"555-1234\" },\n" +
+                    "    { \"type\": \"mobile\", \"number\": \"555-5678\" }\n" +
+                    "  ],\n" +
+                    "  \"children\": [\n" +
+                    "    { \"name\": \"Alice\", \"age\": 10, \"hobbies\": [\"reading\", \"painting\"] },\n" +
+                    "    { \"name\": \"Bob\", \"age\": 8, \"hobbies\": [\"gaming\", \"sports\"] }\n" +
+                    "  ],\n" +
+                    "  \"married\": true,\n" +
+                    "  \"favorites\": {\n" +
+                    "    \"colors\": [\"red\", \"blue\", \"green\"],\n" +
+                    "    \"foods\": [\"pizza\", \"sushi\", \"pasta\"]\n" +
+                    "  }\n" +
+                    "}"
+        val json = JSONUtil.toJsonPrettyStr(str)
+        // 创建美化后的 HTML 内容
+        val htmlContent = GlobalData.getHtmlJson(json)
+        //println(htmlContent)
+        tabData.forEach {
+            val title = it.name
+            val tab = Tab(title)
+            tab.isClosable = false
+            tab.style = it.style
+            dataViewTabPane.tabs.add(tab)
+        }
+        dataViewTabPane.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
+            newValue?.apply {
+                loadTab(text, htmlContent)
+            }
+        }
+        dataViewTabPane.selectionModel.select(dataViewTabPane.tabs[0])
+        loadTab(tabData[0].name, htmlContent)
+    }
+
+    private fun loadTab(text: String, htmlContent: String) {
+        val tabContentItemManager = mutableMapOf<String, Node>()
+        if (tabContentItemManager.containsKey(text)) {
+            dataViewBorderPane.center = tabContentItemManager[text]
+        } else {
+            tabData.find { it.name == text }?.apply {
+                // 创建 WebView 控件
+                val webView = WebView()
+                webView.engine.apply {
+                    loadContent(htmlContent, "text/html")
+                    //load("http://localhost:8080")
+                    loadWorker.stateProperty().addListener { _, _, newValue ->
+                        println("Loading state changed: $newValue")
+                        if (newValue == Worker.State.FAILED) {
+                            System.err.println("Failed to load content: $location")
+                            val exception = loadWorker.exception
+                            exception?.printStackTrace()
+                        }
+                    }
+
+                }
+                tabContentItemManager[text] = webView
+                dataViewBorderPane.center = tabContentItemManager[text]
+            }
+        }
+    }
+}
+data class TreeItemData(val key: String, val value: String)
 class ApiTabContentDesignController {
 
 }
 
-class ApiParams {
-    var url: String = ""
-    val headers: MutableList<MutableMap<String, String>> = mutableListOf()
-    var method = "POST"
+class ApiHelper {
+    companion object {
+        var url: String = ""
+        var headers = mutableListOf<TableCellParams>()
+        var query = mutableListOf<TableCellParams>()
 
-    init {
         // 创建 HttpClient 实例
-        val httpClient = HttpClient.newBuilder().build()
-        val request = HttpRequest.newBuilder()
-            .uri(URI.create("https://jsonplaceholder.typicode.com/posts"))
-            .headers("Content-Type", "application/json", "Accept", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString("""{"title": "foo", "body": "bar", "userId": 1}"""))
-            .build()
-        httpClient.send(request, BodyHandlers.ofString())?.apply {
-            println(this)
-            println(body())
+        private val httpClient = HttpClient.newBuilder().build()
+        fun post(successListener: (response: HttpResponse<*>) -> Unit, errorListener: (error: Throwable) -> Unit) {
+            var queryParams = ""
+            query.forEach { queryParams += it.key + "=" + it.value + "&" }
+            if (queryParams != "" && queryParams.last() == '&') {
+                queryParams = queryParams.substring(0, queryParams.length - 1)
+            }
+            val request = HttpRequest.newBuilder()
+                .uri(URI.create(toUrl()))
+                .headers(*getHeader())
+                .POST(HttpRequest.BodyPublishers.ofString(queryParams))
+                .build()
+            println("request: $request")
+            httpClient.sendAsync(request, BodyHandlers.ofString())?.apply {
+                thenAccept {
+                    successListener.invoke(it)
+                }
+                exceptionally { e ->
+                    errorListener.invoke(e)
+                    return@exceptionally null
+                }
+            }
+        }
+
+        fun get(successListener: (response: HttpResponse<*>) -> Unit, errorListener: (error: Throwable) -> Unit) {
+            val request = HttpRequest.newBuilder()
+                .uri(URI.create(toUrl()))
+                .headers(*getHeader())
+                .GET()
+                .build()
+            httpClient.sendAsync(request, BodyHandlers.ofString())?.apply {
+                thenAccept {
+                    successListener.invoke(it)
+                }
+                exceptionally { e ->
+                    errorListener.invoke(e)
+                    return@exceptionally null
+                }
+            }
+        }
+
+        fun put(successListener: (response: HttpResponse<*>) -> Unit, errorListener: (error: Throwable) -> Unit) {
+            val request = HttpRequest.newBuilder()
+                .uri(URI.create(toUrl()))
+                .headers(*getHeader())
+                .PUT(HttpRequest.BodyPublishers.ofString(""))
+                .build()
+            httpClient.sendAsync(request, BodyHandlers.ofString())?.apply {
+                thenAccept {
+                    successListener.invoke(it)
+                }
+                exceptionally { e ->
+                    errorListener.invoke(e)
+                    return@exceptionally null
+                }
+            }
+        }
+
+        private fun toUrl(): String {
+            if (query.isNotEmpty()) {
+                url += "?"
+                query.forEach { url += it.key + "=" + it.value + "&" }
+                if (url.last() == '&') {
+                    url = url.substring(0, url.length - 1)
+                }
+            }
+            return url
+        }
+
+        private fun getHeader(): Array<String> {
+            val header = arrayListOf<String>()
+            if (headers.isNotEmpty()) {
+                headers.forEach {
+                    if (it.key.isNotEmpty() && it.value.isNotEmpty()) {
+                        header.add(it.key)
+                        header.add(it.value)
+                    }
+                }
+            }
+            return header.toTypedArray()
         }
     }
-
 }
 
 class ApiTabContentDevController {
@@ -141,24 +313,108 @@ class ApiTabContentDevController {
 
     @FXML
     lateinit var paramBorderPane: BorderPane
-    private val tabData = mutableListOf<TabInfo>()
+
+    @FXML
+    lateinit var responseTabPane: TabPane
+
+    @FXML
+    lateinit var responseBorderPane: BorderPane
+
+    private val paramTypeTabData = mutableListOf<TabInfo>()
+    private lateinit var paramTypePaneManager: MutableMap<String, Pane>
+    private val responseTabData = mutableListOf<TabInfo>()
+    private lateinit var responsePaneManager: MutableMap<String, Pane>
+
 
     @FXML
     fun initialize() {
         initParamUrlViews()
         initParamTypeViews()
-        urlText.focusedProperty().addListener { _, _, newValue ->
-            if (newValue) {
-                urlText.style = "-fx-border-color: #f78b2b; -fx-background-color: white;"
-            } else {
-                urlText.style = "-fx-background-color: transparent"
+        initResponsePane()
+        urlText.apply {
+            focusedProperty().addListener { _, _, newValue ->
+                if (newValue) {
+                    urlText.style = "-fx-border-color: #f78b2b; -fx-background-color: white;"
+                } else {
+                    urlText.style = "-fx-background-color: transparent"
+                }
+            }
+            textProperty().addListener { _, _, newValue ->
+                setQueryData(newValue)
             }
         }
         sendBtn.onMouseClicked = EventHandler {
-            val params = ApiParams()
-            params.url = urlText.text
-            reqMethodType.findChildren<Label>("label")?.apply {
-                params.method = text
+            request()
+        }
+
+    }
+
+    private fun request() {
+        urlText.text.apply {
+            val url = if (this.contains("?")) {
+                this.split("?")[0]
+            } else {
+                this
+            }
+            ApiHelper.url = url
+        }
+        (paramTypeTabData[0].controller as ApiTabContentDevHeaderController).apply {
+            ApiHelper.headers = getData()
+        }
+        (paramTypeTabData[1].controller as ApiTabContentDevQueryController).apply {
+            ApiHelper.query = getData()
+        }
+        when (reqMethodType.selectedItem) {
+            types[0] -> {
+                ApiHelper.post({ requestSuccess(it) }, { requestError(it) })
+            }
+
+            types[1] -> {
+                ApiHelper.get({ requestSuccess(it) }, { requestError(it) })
+            }
+
+            types[2] -> {
+                ApiHelper.put({ requestSuccess(it) }, { requestError(it) })
+            }
+        }
+    }
+
+    private fun requestSuccess(response: HttpResponse<*>) {
+        Platform.runLater {
+
+        }
+    }
+
+    private fun requestError(throwable: Throwable) {
+        Platform.runLater {
+
+        }
+    }
+
+    private fun setQueryData(url: String) {
+        if (url.isNotEmpty() && url.contains("?")) {
+            val queryParams = url.split("?")[1]
+            var params = listOf<String>()
+            if (queryParams.contains("&")) {
+                params = queryParams.split("&")
+            } else if (queryParams.contains(",")) {
+                params = queryParams.split(",")
+            }
+            if (params.isNotEmpty()) {
+                val cells = mutableListOf<TableCellParams>()
+                params.forEach {
+                    val param = it.split("=")
+                    val cellParams = TableCellParams(param[0], param[1])
+                    cellParams.disable = false
+                    cells.add(cellParams)
+                }
+                if (cells.isNotEmpty()) {
+                    selectTab(1)
+                    (paramTypeTabData[1].controller as ApiTabContentDevQueryController).apply {
+                        queryTableView.items.clear()
+                        queryTableView.items.addAll(cells)
+                    }
+                }
             }
         }
     }
@@ -185,19 +441,25 @@ class ApiTabContentDevController {
     }
 
     private fun initParamTypeViews() {
-        tabData.add(TabInfo("Header", "api-tab-content-dev-header.fxml", "-fx-pref-width: 70"))
-        tabData.add(TabInfo("Query", "api-tab-content-dev-query.fxml", "-fx-pref-width: 64"))
-        tabData.add(TabInfo("Path", "api-tab-content-dev-path.fxml", "-fx-pref-width: 58;"))
-        tabData.add(TabInfo("Body", "api-tab-content-dev-body.fxml", "-fx-pref-width: 58"))
-        tabData.add(TabInfo("认证", "api-tab-content-dev-auth.fxml", "-fx-pref-width: 58"))
-        tabData.add(TabInfo("Cookie", "api-tab-content-dev-cookie.fxml", "-fx-pref-width: 70"))
-        tabData.add(TabInfo("预执行操作", "api-tab-content-dev-pre.fxml", "-fx-pref-width: 90"))
-        tabData.add(TabInfo("后执行操作", "api-tab-content-dev-after.fxml", "-fx-pref-width: 90"))
-        paramTypeTabPane.loadTabContent(tabData, paramBorderPane)
-        paramTypeTabPane.selectionModel.select(paramTypeTabPane.tabs[0])
-        tabData[0].apply {
-            paramBorderPane.center = FXMLLoader(fxml.getUrl()).load()
-        }
+        paramTypeTabData.add(TabInfo("Header", "api-tab-content-dev-header.fxml", "-fx-pref-width: 70"))
+        paramTypeTabData.add(TabInfo("Query", "api-tab-content-dev-query.fxml", "-fx-pref-width: 64"))
+        paramTypeTabData.add(TabInfo("Path", "api-tab-content-dev-path.fxml", "-fx-pref-width: 58;"))
+        paramTypeTabData.add(TabInfo("Body", "api-tab-content-dev-body.fxml", "-fx-pref-width: 58"))
+        paramTypeTabData.add(TabInfo("认证", "api-tab-content-dev-auth.fxml", "-fx-pref-width: 58"))
+        paramTypeTabData.add(TabInfo("Cookie", "api-tab-content-dev-cookie.fxml", "-fx-pref-width: 70"))
+        paramTypeTabData.add(TabInfo("预执行操作", "api-tab-content-dev-pre.fxml", "-fx-pref-width: 90"))
+        paramTypeTabData.add(TabInfo("后执行操作", "api-tab-content-dev-after.fxml", "-fx-pref-width: 90"))
+        paramTypePaneManager = paramTypeTabPane.loadTabContent(paramTypeTabData, paramBorderPane)
+        //初始化
+        val loader = FXMLLoader(paramTypeTabData[0].fxml.getUrl())
+        paramTypePaneManager[paramTypeTabData[0].name] = loader.load()
+        paramTypeTabData[0].controller = loader.getController()
+        selectTab(0)
+    }
+
+    private fun selectTab(index: Int) {
+        paramTypeTabPane.selectionModel.select(index)
+        paramBorderPane.center = paramTypePaneManager[paramTypeTabData[index].name]
     }
 
     private fun setRequestType(type: String) {
@@ -210,6 +472,24 @@ class ApiTabContentDevController {
 
     private fun setHttpVersion(version: String) {
         httpVersion.dropDownMenuController.dropDownBtn.text = version
+    }
+
+    private fun initResponsePane() {
+        //responseTabData
+        responseTabData.add(TabInfo("实时响应", "api-tab-content-dev-res-result.fxml", "-fx-pref-width: 90"))
+        responseTabData.add(TabInfo("请求头", "api-tab-content-dev-res-header.fxml", "-fx-pref-width: 65"))
+        responseTabData.add(TabInfo("响应头", "api-tab-content-dev-res-res.fxml", "-fx-pref-width: 65;"))
+        responseTabData.add(TabInfo("Cookie", "api-tab-content-dev-res-cookie.fxml", "-fx-pref-width: 70"))
+        responseTabData.add(TabInfo("响应示例", "api-tab-content-dev-res-example.fxml", "-fx-pref-width: 90"))
+        responseTabData.add(TabInfo("实际请求", "api-tab-content-dev-res-req.fxml", "-fx-pref-width: 90"))
+        responseTabData.add(TabInfo("控制台", "api-tab-content-dev-res-console.fxml", "-fx-pref-width: 65"))
+        responsePaneManager = responseTabPane.loadTabContent(responseTabData, responseBorderPane)
+        //初始化
+        val loader = FXMLLoader(responseTabData[0].fxml.getUrl())
+        responsePaneManager[responseTabData[0].name] = loader.load()
+        responseTabData[0].controller = loader.getController()
+        responseTabPane.selectionModel.select(0)
+        responseBorderPane.center = responsePaneManager[responseTabData[0].name]
     }
 }
 
@@ -256,9 +536,14 @@ class ApiTabContentDevHeaderController {
             controller.textField.text = item
             controller.textField.isDisable = true
             if (index == 0) {
-                controller.dropDownMenuView.dropDownMenuController.dropDownBtn.text = "String"
-                controller.dropDownMenuView.dropDownMenuController.dropDownBtn.isDisable = true
+                controller.dropDownMenuView.dropDownMenuController.dropDownBtn.apply {
+                    isVisible = true
+                    text = "String"
+                    isDisable = true
+                }
                 controller.dropDownMenuView.dropDownMenuController.root.style = "-fx-background-color:#f5f5f5"
+                controller.checkBox.isVisible = true
+                controller.checkBox.isDisable = false
             } else {
                 controller.dropDownMenuView.isVisible = false
                 controller.checkBox.isVisible = false
@@ -269,11 +554,17 @@ class ApiTabContentDevHeaderController {
         data.add(TableCellParams("Accept", "*/*"))
         data.add(TableCellParams("Accept-Encoding", "gzip, deflate, br"))
         data.add(TableCellParams("User-Agent", "PostmanRuntime-CustomApiRuntime/1.1.0"))
-        data.add(TableCellParams("Connection", "keep-alive"))
-        publicHeaderTableView.bind(headers)
-        publicHeaderTableView.items = FXCollections.observableArrayList(data)
+        //data.add(TableCellParams("Connection", "keep-alive"))
+        publicHeaderTableView.apply {
+            bind(headers)
+            items = FXCollections.observableArrayList(data)
+        }
     }
 
+    fun getData(): MutableList<TableCellParams> {
+        publicHeaderTableView.items.addAll(publicHeaderCustomTableView.items.filter { !it.disable })
+        return publicHeaderTableView.items.toMutableList()
+    }
 }
 
 class ApiTabContentDevQueryController {
@@ -283,6 +574,11 @@ class ApiTabContentDevQueryController {
     @FXML
     fun initialize() {
         ApiDevTableView(queryTableView)
+    }
+
+    fun getData(): MutableList<TableCellParams> {
+        val items = queryTableView.items
+        return items.filter { !it.disable }.toMutableList()
     }
 }
 

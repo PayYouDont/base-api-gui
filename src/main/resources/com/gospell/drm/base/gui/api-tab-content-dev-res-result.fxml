@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.gospell.drm.base.gui.controller.ApiTabContentDevResResultController">
+    <HBox style="-fx-padding: 10">
+        <TabPane fx:id="dataViewTabPane" styleClass="api-content-tab-pane" prefHeight="32" prefWidth="252"/>
+    </HBox>
+    <BorderPane fx:id="dataViewBorderPane" style="-fx-padding: 0 10;-fx-border-color: #f2f4f7" VBox.vgrow="ALWAYS" />
+</VBox>

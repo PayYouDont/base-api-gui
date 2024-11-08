@@ -379,7 +379,7 @@
 }
 
 /******************paramTypeTabPane**********************/
-#paramTypeTabPane {
+.dev-tab-pane {
     -fx-background-color: white;
     -fx-border-width: 0 0 1 0;
     -fx-border-color: #f2f4f7;
@@ -395,42 +395,42 @@
     -fx-pref-width: 40;
 }
 
-#paramTypeTabPane .tab {
+.dev-tab-pane .tab {
     -fx-background-color: transparent; /* 未选中的 Tab 的背景颜色 */
     -fx-pref-height: 38 !important;
 }
 
-#paramTypeTabPane .tab:hover .tab-label {
+.dev-tab-pane .tab:hover .tab-label {
     -fx-text-fill: #f78b2b;
 }
 
-#paramTypeTabPane .tab:selected {
+.dev-tab-pane .tab:selected {
     -fx-border-color: #f78b2b;
     -fx-border-width: 0 0 2 0;
 }
 
-#paramTypeTabPane .tab .tab-label {
+.dev-tab-pane .tab .tab-label {
     -fx-text-fill: #5c5e61;
     -fx-font-size: 13;
     -fx-border-width: 0;
 }
 
-#paramTypeTabPane .tab:selected .tab-label {
+.dev-tab-pane .tab:selected .tab-label {
     -fx-text-fill: #f78b2b;
     -fx-font-weight: normal;
 }
 
 /*api-content-tab*/
-#paramTypeTabPane .tab {
+.dev-tab-pane .tab {
     -fx-padding: 0 15;
 }
 
 /* Tab选中的时候选中其边框并修改样式 */
-#paramTypeTabPane .tab-pane:focused .tab-label {
+.dev-tab-pane .tab-pane:focused .tab-label {
     -fx-font-weight: normal;
 }
 
-#paramTypeTabPane .tab-header-area {
+.dev-tab-pane .tab-header-area {
     -fx-padding: 2 10;
 }
 
@@ -554,7 +554,7 @@
 /* 自定义 CheckBox 的背景颜色和边框颜色 */
 .check-box {
     -fx-background-color: transparent;
-    -fx-border-color: #f2f4f7;;
+    -fx-border-color: #f2f4f7;
     -fx-border-width: 1;
     -fx-border-radius: 3;
     -fx-min-width: 15;

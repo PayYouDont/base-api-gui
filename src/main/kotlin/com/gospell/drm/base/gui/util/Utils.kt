@@ -2,6 +2,7 @@ package com.gospell.drm.base.gui.util
 
 import com.gospell.drm.base.gui.MainApplication
 import com.gospell.drm.base.gui.controller.TabInfo
+import com.gospell.drm.base.gui.util.Utils.Companion.getImage
 import javafx.fxml.FXMLLoader
 import javafx.scene.Node
 import javafx.scene.Parent
@@ -17,6 +18,11 @@ import java.net.URL
 
 class Utils {
     companion object {
+        fun String.getResource(): String {
+            val resourceUrl = Utils::class.java.getResource(this)?.toExternalForm()
+                ?: throw RuntimeException("Resource not found: $this")
+            return resourceUrl
+        }
         fun String.getImage(): Image {
             val resourceUrl = Utils::class.java.getResource("/icons/$this")
                 ?: throw RuntimeException("Resource not found: /icons/$this")
@@ -52,7 +58,7 @@ class Utils {
             return null
         }
 
-        fun TabPane.loadTabContent(tabData: MutableList<TabInfo>, borderPane: BorderPane) {
+        fun TabPane.loadTabContent(tabData: MutableList<TabInfo>, borderPane: BorderPane):MutableMap<String, Pane> {
             val tabContentItemManager = mutableMapOf<String, Pane>()
             tabData.forEach {
                 val title = it.name
@@ -67,15 +73,18 @@ class Utils {
                         borderPane.center = tabContentItemManager[text]
                     } else {
                         tabData.find { it.name == text }?.apply {
-                            tabContentItemManager[text] = FXMLLoader(fxml.getUrl()).load()
+                            val loader = FXMLLoader(fxml.getUrl())
+                            tabContentItemManager[text] = loader.load()
                             borderPane.center = tabContentItemManager[text]
+                            controller = loader.getController()
                         }
                     }
                 }
             }
+            return tabContentItemManager
         }
 
-        fun <T>TableView<T>.getTableRow(rowIndex: Int): TableRow<T>? {
+        fun <T> TableView<T>.getTableRow(rowIndex: Int): TableRow<T>? {
             if (rowIndex < 0 || rowIndex >= items.size) {
                 return null
             }

@@ -13,7 +13,7 @@
       id="tab-cell"
       fx:controller="com.gospell.drm.base.gui.view.ItemTableCellController">
     <Region prefWidth="16"/>
-    <CheckBox fx:id="checkBox" visible="false" disable="true"/>
+    <CheckBox fx:id="checkBox" visible="false" managed="false" disable="true"/>
     <Region prefWidth="2"/>
     <HBox styleClass="table-cell-edit-text" HBox.hgrow="ALWAYS" alignment="CENTER">
         <TextField fx:id="textField" text="Accept" styleClass="no-border-textfield" style="-fx-text-alignment: center"

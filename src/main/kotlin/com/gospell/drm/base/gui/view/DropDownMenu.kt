@@ -42,7 +42,7 @@ class DropDownMenuView : BorderPane() {
     private var popup = Popup()
     var itemSelectedListener: ((item: Node) -> Unit)? = null
     var dropDownMenuController: DropDownMenuController
-    var selectedItem: Node? = null
+    var selectedItem: Any? = null
 
     init {
         val loader = FXMLLoader("drop-down-menu.fxml".getUrl())
@@ -65,11 +65,22 @@ class DropDownMenuView : BorderPane() {
             bindListener.invoke(itemData, itemView)
             itemView.onMouseClicked = EventHandler {
                 itemSelectedListener?.invoke(itemView)
-                selectedItem = itemView
+                selectedItem = itemData
                 popup.hide()
             }
         }
-        listView.selectionModel.select(selectedItem)
+        if(selectedItem == null){
+            listView.selectionModel.select(0)
+            if(list.isNotEmpty()){
+                selectedItem = list[0]
+            }
+        }else{
+            selectedItem.apply {
+                this as T
+                listView.selectionModel.select(list.indexOf(this))
+            }
+        }
+
     }
 
     private fun showDropdownMenu() {
