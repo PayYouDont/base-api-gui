@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<VBox alignment="CENTER" VBox.vgrow="ALWAYS">
+    <ImageView>
+        <Image url="@../../../../../icons/url.png"/>
+    </ImageView>
+    <Label text="请输入url点击发送按钮获取响应结果" style="-fx-text-fill: #a9acae"/>
+</VBox>

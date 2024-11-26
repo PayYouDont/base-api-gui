@@ -2,7 +2,11 @@
 
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.TabPane?>
+<?import com.gospell.drm.base.gui.view.CustomTableView?>
 <VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml">
-
+      VBox.vgrow="ALWAYS"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:id="rootVBox"
+      fx:controller="com.gospell.drm.base.gui.controller.ApiTabContentDevResHeaderController">
+    <CustomTableView fx:id="headerTableView" styleClass="header-custom-table" />
 </VBox>

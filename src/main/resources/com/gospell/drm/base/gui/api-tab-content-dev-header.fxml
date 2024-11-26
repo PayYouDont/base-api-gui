@@ -10,6 +10,7 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       VBox.vgrow="ALWAYS"
+      fx:id="root"
       fx:controller="com.gospell.drm.base.gui.controller.ApiTabContentDevHeaderController">
     <Accordion fx:id="devAccordion">
         <panes>
@@ -23,6 +24,6 @@
             </TitledPane>
         </panes>
     </Accordion>
-    <CustomTableView fx:id="publicHeaderCustomTableView" VBox.vgrow="ALWAYS"/>
+    <CustomTableView fx:id="publicHeaderCustomTableView" styleClass="header-custom-table" VBox.vgrow="ALWAYS"/>
     <Region VBox.vgrow="ALWAYS"/>
 </VBox>

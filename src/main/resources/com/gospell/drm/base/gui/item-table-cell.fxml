@@ -16,7 +16,7 @@
     <CheckBox fx:id="checkBox" visible="false" managed="false" disable="true"/>
     <Region prefWidth="2"/>
     <HBox styleClass="table-cell-edit-text" HBox.hgrow="ALWAYS" alignment="CENTER">
-        <TextField fx:id="textField" text="Accept" styleClass="no-border-textfield" style="-fx-text-alignment: center"
+        <TextField fx:id="textField" text="Accept" styleClass="no-border-textfield" style="-fx-text-alignment: center;-fx-font-size: 13"
                    HBox.hgrow="ALWAYS"/>
     </HBox>
     <DropDownMenuView fx:id="dropDownMenuView" style="-fx-alignment: center" disable="true" visible="false"/>

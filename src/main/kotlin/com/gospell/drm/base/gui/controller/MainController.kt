@@ -1,10 +1,10 @@
 package com.gospell.drm.base.gui.controller
 
+import com.gospell.drm.base.gui.data.ApiData
 import com.gospell.drm.base.gui.util.Utils.Companion.getUrl
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.SplitPane
-import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
@@ -27,7 +27,6 @@ class MainController {
 
     private lateinit var apiListController: ApiListController
     private lateinit var apiContentTabPanelController: ApiContentTabPanelController
-
     @FXML
     fun initialize() {
         // 加载 api-list.fxml 文件
@@ -66,6 +65,9 @@ class MainController {
         val rightMain = FXMLLoader("api-content-main.fxml".getUrl())
         val rightMainAnchorPane = rightMain.load<BorderPane>()
         apiContentTabPanelController = rightMain.getController()
+        apiListController.apiClickListener = {
+            apiContentTabPanelController.addTab(it)
+        }
         rightSplitPaneRight.children.add(rightMainAnchorPane)
         // 监听 rightSplitPanelLeft 的宽度变化，并更新 listView 的宽度
         rightSplitPaneRight.widthProperty().addListener { _, _, newWidth ->

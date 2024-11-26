@@ -6,8 +6,9 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       VBox.vgrow="ALWAYS"
+      fx:id="root"
       fx:controller="com.gospell.drm.base.gui.controller.ApiTabContentDevController">
-    <HBox prefHeight="32">
+    <HBox minHeight="32" maxHeight="32" >
         <HBox style="-fx-padding: 4;-fx-background-color: #f2f4f7" HBox.hgrow="ALWAYS">
             <DropDownMenuView fx:id="reqMethodType" prefWidth="100"
                               style="-fx-border-width: 0;-fx-background-color: white;"/>
@@ -23,18 +24,18 @@
         <Button fx:id="saveBtn" text="发送" prefWidth="80" prefHeight="42"/>
         <Region prefWidth="5"/>
     </HBox>
-    <Region prefHeight="5"/>
+    <Region minHeight="5" maxHeight="5"/>
     <TabPane fx:id="paramTypeTabPane" styleClass="dev-tab-pane"/>
-    <Region prefHeight="5"/>
+    <Region minHeight="5" maxHeight="5"/>
     <SplitPane fx:id="devSplitPane" orientation="VERTICAL" dividerPositions="0.5" VBox.vgrow="ALWAYS">
         <ScrollPane fitToHeight="true" fitToWidth="true">
             <BorderPane fx:id="paramBorderPane" style="-fx-padding: 0;-fx-background-color: white" />
         </ScrollPane>
-        <BorderPane>
+        <BorderPane VBox.vgrow="ALWAYS">
             <center>
-                <VBox>
+                <VBox VBox.vgrow="ALWAYS">
                     <TabPane fx:id="responseTabPane" styleClass="dev-tab-pane"/>
-                    <BorderPane  fx:id="responseBorderPane"  style="-fx-padding: 0;-fx-background-color: white"/>
+                    <BorderPane  fx:id="responseBorderPane"  style="-fx-padding: 0;-fx-background-color: white" VBox.vgrow="ALWAYS"/>
                 </VBox>
             </center>
         </BorderPane>

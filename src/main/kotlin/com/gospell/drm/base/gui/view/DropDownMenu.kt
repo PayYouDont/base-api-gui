@@ -77,10 +77,11 @@ class DropDownMenuView : BorderPane() {
         }else{
             selectedItem.apply {
                 this as T
-                listView.selectionModel.select(list.indexOf(this))
+                val index = list.indexOf(this)
+                listView.selectionModel.select(index)
+                listView.scrollTo(index)
             }
         }
-
     }
 
     private fun showDropdownMenu() {

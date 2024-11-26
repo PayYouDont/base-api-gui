@@ -6,9 +6,11 @@
 <?import javafx.scene.layout.HBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
+      VBox.vgrow="ALWAYS"
+      fx:id="root"
       fx:controller="com.gospell.drm.base.gui.controller.ApiTabContentDevResResultController">
-    <HBox style="-fx-padding: 10">
+    <HBox style="-fx-padding: 10" minHeight="50">
         <TabPane fx:id="dataViewTabPane" styleClass="api-content-tab-pane" prefHeight="32" prefWidth="252"/>
     </HBox>
-    <BorderPane fx:id="dataViewBorderPane" style="-fx-padding: 0 10;-fx-border-color: #f2f4f7" VBox.vgrow="ALWAYS" />
+    <BorderPane fx:id="dataViewBorderPane" style="-fx-padding: 0 10;-fx-border-color: #f2f4f7;-fx-border-width: 0 1" VBox.vgrow="ALWAYS"/>
 </VBox>

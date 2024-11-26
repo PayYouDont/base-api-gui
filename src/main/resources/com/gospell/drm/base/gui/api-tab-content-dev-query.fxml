@@ -5,6 +5,7 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       VBox.vgrow="ALWAYS"
+      fx:id="root"
       fx:controller="com.gospell.drm.base.gui.controller.ApiTabContentDevQueryController">
     <CustomTableView fx:id="queryTableView" VBox.vgrow="ALWAYS"/>
 </VBox>

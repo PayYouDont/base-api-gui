@@ -20,16 +20,25 @@
 }
 
 /* styles.css */
+#addBtn{
+    -fx-border-style: dashed;
+}
 .full-width-button {
     -fx-padding: 5px;
     -fx-background-color: transparent; /* 示例背景颜色 */
     -fx-border-color: #ccc;
     -fx-border-radius: 2px;
-    -fx-border-style: dashed;
     -fx-text-fill: #5b5d60; /* 示例文本颜色 */
 }
 
-/* 设置 HBox 的样式 */
+.full-width-button:hover {
+    -fx-border-color: #f78b2b;
+    -fx-text-fill: #f78b2b;
+}
+.full-width-button:hover .label{
+    -fx-text-fill: #f78b2b;
+}
+    /* 设置 HBox 的样式 */
 #apiItemHBox {
     -fx-padding: 5px;
     justify-content: space-between; /* 主轴上的项目间隔 */
@@ -176,7 +185,7 @@
 
 .custom-tab-pane .tab {
     -fx-background-color: transparent; /* 未选中的 Tab 的背景颜色 */
-    -fx-pref-width: 150;
+    /*-fx-pref-width: 150;*/
     -fx-pref-height: 40;
 }
 
@@ -207,29 +216,29 @@
 }
 
 .post {
-    -fx-fill: orange;
-    -fx-text-fill: orange;
+    -fx-fill: orange !important;
+    -fx-text-fill: orange !important;
     -fx-font-size: 14;
     -fx-font-weight: bold;
 }
 
 .get {
-    -fx-fill: green;
-    -fx-text-fill: green;
+    -fx-fill: green !important;
+    -fx-text-fill: green !important;
     -fx-font-size: 14;
     -fx-font-weight: bold;
 }
 
 .put {
-    -fx-fill: blue;
-    -fx-text-fill: blue;
+    -fx-fill: blue !important;
+    -fx-text-fill: blue !important;
     -fx-font-size: 14;
     -fx-font-weight: bold;
 }
 
 .delete {
-    -fx-fill: red;
-    -fx-text-fill: red;
+    -fx-fill: red !important;
+    -fx-text-fill: red !important;
     -fx-font-size: 14;
     -fx-font-weight: bold;
 }
@@ -570,11 +579,13 @@
     -fx-border-radius: 3;
     -fx-background-radius: 3;
 }
+
 /* 禁用状态样式 */
-.check-box:disabled{
+.check-box:disabled {
     -fx-background-color: #f5f5f5;
     -fx-border-color: #a7a9aa;
 }
+
 /* 自定义选中标记的颜色 */
 .check-box .box {
     -fx-background-color: transparent;
@@ -587,6 +598,7 @@
     -fx-background-color: white;
     -fx-padding: 5; /* 设置内边距为0 */
 }
+
 .check-box:disabled .mark {
     -fx-background-color: #a7a9aa;
     -fx-padding: 5; /* 设置内边距为0 */
@@ -596,27 +608,29 @@
 .check-box:hover {
     -fx-border-color: #f78b2b;
 }
-.indeterminate{
+
+.indeterminate {
     -fx-background-color: transparent !important;
     -fx-padding: 0 !important; /* 移除内边距 */
     -fx-alignment: CENTER !important; /* 居中对齐 */
     -fx-text-alignment: CENTER !important;
 }
+
 .indeterminate .mark {
     -fx-background-color: #f78b2b !important; /* 设置矩形背景颜色 */
-    -fx-shape: "M0,0 h1 v1 h-1 z" ; /* 设置矩形形状 */
+    -fx-shape: "M0,0 h1 v1 h-1 z"; /* 设置矩形形状 */
     -fx-min-width: 8;
     -fx-max-width: 8;
     -fx-min-height: 8;
     -fx-max-height: 8;
 }
 
-#publicHeaderTableView .scroll-bar, #publicHeaderCustomTableView .scroll-bar {
+#header-custom-table .scroll-bar, .header-custom-table .scroll-bar {
     -fx-background-color: transparent; /* 滚动条背景颜色 */
     -fx-opacity: 0; /* 完全透明 */
 }
 
-#publicHeaderTableView .scroll-bar .thumb, #publicHeaderCustomTableView .scroll-bar .thumb {
+#header-custom-table .scroll-bar .thumb, .header-custom-table .scroll-bar .thumb {
     -fx-background-color: transparent; /* 滚动条拇指颜色 */
     -fx-opacity: 0; /* 完全透明 */
 }
@@ -663,4 +677,64 @@
 
 #tab-cell #dropDownMenuView:hover {
     -fx-border-color: #f78b2b;
+}
+
+
+/* 自定义 RadioButton 的样式 */
+
+/* 基本样式 */
+.radio-button {
+    -fx-padding: 10;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-text-fill: black;
+}
+
+/* 选中状态的样式 */
+.radio-button:selected {
+    -fx-background-color: transparent;
+    -fx-text-fill: #5c5e61;;
+}
+
+.radio-button:selected .radio {
+    -fx-border-color: #f78b2b;
+}
+
+/* 未选中状态的样式 */
+.radio-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #5c5e61;
+}
+
+/* 圆形按钮的样式 */
+.radio-button .radio .dot {
+    -fx-background-color: transparent;
+    -fx-background-radius: 50%;
+}
+
+/* 圆形按钮的边框样式 */
+.radio-button .radio {
+    -fx-background-color: transparent;
+    -fx-border-color: #f2f4f7;
+    -fx-border-width: 1;
+    -fx-border-radius: 50%;
+    -fx-padding: 3; /* 调整内边距以确保圆点居中 */
+    -fx-min-width: 20; /* 设置最小宽度 */
+    -fx-min-height: 20; /* 设置最小高度 */
+}
+
+/* 选中状态下的圆形按钮样式 */
+.radio-button:selected .radio .dot {
+    -fx-background-color: #f78b2b;
+    -fx-translate-x: 0px; /* 调整水平位置 */
+    -fx-translate-y: -1px; /* 调整垂直位置 */
+}
+
+.radio-button .radio:hover {
+    -fx-border-color: #f78b2b;
+}
+
+.hand-btn{
+    -fx-cursor: hand; /* 鼠标指针样式为手形 */
+    -fx-border-width: 0;
 }

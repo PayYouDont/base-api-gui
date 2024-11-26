@@ -7,21 +7,40 @@ import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.Button
 import javafx.scene.control.Label
+import javafx.scene.control.TextField
 import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.layout.HBox
+import javafx.stage.FileChooser
+import java.io.File
 
 
 class TableCellParams(var key: String, var value: String) {
     var description: String = ""
-    var valueType: String = "String"
+    var keyType: String = "String"
     var selected: Boolean = true
     var disable = true
     override fun toString(): String {
-        return "TableCellParams(key='$key', value='$value', description='$description', valueType='$valueType', selected=$selected, disable=$disable)"
+        return "TableCellParams(key='$key', value='$value', description='$description', keyType='$keyType', selected=$selected, disable=$disable)"
     }
 }
 
 class ApiDevTableView(private val tableView: CustomTableView<TableCellParams>) {
+    val valueTypes = mutableListOf(
+        "Array",
+        "Boolean",
+        "Function",
+        "NaN",
+        "Number",
+        "Float",
+        "Integer",
+        "Object",
+        "RegExp",
+        "String",
+        "Undefined",
+        "Null",
+        "Date"
+    )
+
     init {
         initTableView()
     }
@@ -29,23 +48,7 @@ class ApiDevTableView(private val tableView: CustomTableView<TableCellParams>) {
     private fun initTableView() {
         val headers = mutableListOf("参数名", "参数值", "描述")
         val headerValues = mutableListOf("key", "value", "description")
-        val data = mutableListOf<TableCellParams>()
-        val valueTypes = mutableListOf(
-            "Array",
-            "Boolean",
-            "Function",
-            "NaN",
-            "Number",
-            "Float",
-            "Integer",
-            "Object",
-            "RegExp",
-            "String",
-            "Undefined",
-            "Null",
-            "Date"
-        )
-        data.add(TableCellParams(" ", " "))
+        val data = mutableListOf(TableCellParams(" ", " "))
         tableView.apply {
             bindHeaderListener = { index, headerColumn ->
                 headerColumn.cellValueFactory = PropertyValueFactory(headerValues[index])
@@ -58,13 +61,17 @@ class ApiDevTableView(private val tableView: CustomTableView<TableCellParams>) {
                 controller.textField.text = item
                 controller.dropDownMenuView.apply {
                     isDisable = false
+                    selectedItem = itemData.keyType
                     bind(valueTypes, "item-request-type.fxml") { itemType, itemView ->
                         itemView.findChildren<Label>("label")?.text = itemType
                     }
                     itemSelectedListener = { itemView ->
                         itemView.findChildren<Label>("label")?.apply {
                             dropDownMenuController.dropDownBtn.text = text
-                            itemData.valueType = text
+                            itemData.keyType = text
+                            if (text == "File") {
+                                tableView.refresh()
+                            }
                         }
                     }
                 }
@@ -91,12 +98,25 @@ class ApiDevTableView(private val tableView: CustomTableView<TableCellParams>) {
                             }
                         }
                         controller.dropDownMenuView.isVisible = true
-                        controller.dropDownMenuView.dropDownMenuController.dropDownBtn.text = itemData.valueType
+                        controller.dropDownMenuView.dropDownMenuController.dropDownBtn.text = itemData.keyType
                     }
 
                     1 -> {
-                        controller.textField.textProperty().addListener { _, _, _ ->
-                            itemData.value = controller.textField.text
+                        controller.textField.apply {
+                            if (itemData.keyType == "File") {
+                                isEditable = false
+                                text = if (itemData.value.isEmpty()) "请上传文件" else File(itemData.value).name
+                                parent.styleClass.add("hand-btn")
+                                setOnMouseClicked {
+                                    handleFileUpload(itemData, this)
+                                }
+                            } else {
+                                parent.styleClass.remove("hand-btn")
+                                isEditable = true
+                                textProperty().addListener { _, _, _ ->
+                                    itemData.value = text
+                                }
+                            }
                         }
                     }
 
@@ -160,6 +180,21 @@ class ApiDevTableView(private val tableView: CustomTableView<TableCellParams>) {
                     indeterminate = false
                     isSelected = newValue
                 }
+            }
+        }
+    }
+
+    private fun handleFileUpload(cellParams: TableCellParams, textField: TextField) {
+        FileChooser().apply {
+            extensionFilters.addAll(
+                FileChooser.ExtensionFilter("所有文件", "*.*"),
+                FileChooser.ExtensionFilter("文本所有", "*.*"),
+                FileChooser.ExtensionFilter("图像文件", "*.png", "*.jpg", "*.gif")
+            )
+            val file = showOpenDialog(null)
+            if (file != null) {
+                cellParams.value = file.absolutePath
+                textField.text = file.name
             }
         }
     }

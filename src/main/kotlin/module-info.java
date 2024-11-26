@@ -7,7 +7,9 @@ module com.gospell.drm.base.gui.controller {
     requires java.net.http;
     requires javafx.web;
     requires cn.hutool.json;
-    requires com.fasterxml.jackson.databind;
+    requires java.sql;
+    requires okhttp3;
+    requires cn.hutool.core;
     opens com.gospell.drm.base.gui.controller to javafx.fxml;
     opens com.gospell.drm.base.gui.view to javafx.fxml;
     exports com.gospell.drm.base.gui.controller;

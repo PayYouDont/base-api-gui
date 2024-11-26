@@ -1,6 +1,7 @@
 package com.gospell.drm.base.gui.controller
 
-import com.gospell.drm.base.gui.MainApplication
+import com.gospell.drm.base.gui.data.ApiData
+import com.gospell.drm.base.gui.data.DefaultData
 import com.gospell.drm.base.gui.util.Utils.Companion.getUrl
 import javafx.event.EventHandler
 import javafx.fxml.FXML
@@ -34,7 +35,7 @@ open class ApiListController {
 
     @FXML
     lateinit var addBtnXml: Button
-
+    var apiClickListener: ((apiData: ApiData) -> Unit)? = null
 
     @FXML
     fun initialize() {
@@ -43,7 +44,7 @@ open class ApiListController {
         addBtn.id = "addBtn"
         addBtn.styleClass.add("full-width-button")
         addBtn.onAction = EventHandler {
-            ApiNewPopupController.showDropdownMenu(anchorPane)
+            ApiNewPopupController.showDropdownMenu(anchorPane,apiClickListener)
         }
         AnchorPane.setLeftAnchor(addBtn, 0.0)
         AnchorPane.setRightAnchor(addBtn, 0.0)
@@ -60,20 +61,22 @@ open class ApiListController {
             }
         }
         addBtnXml.onAction = EventHandler {
-            ApiNewPopupController.showDropdownMenu(addBtnXml)
+            ApiNewPopupController.showDropdownMenu(addBtnXml,apiClickListener)
         }
-        addApiMenu()
-        addApiMenu()
+        DefaultData.apiDataList.onEach {
+            addApiMenu(it)
+        }
     }
 
-    private fun addApiMenu() {
+    private fun addApiMenu(apiData: ApiData) {
         // 加载 api-list.fxml 文件
-        val fxmlLoader = FXMLLoader(MainApplication::class.java.getResource("api-list-item.fxml"))
+        val fxmlLoader = FXMLLoader("api-list-item.fxml".getUrl())
         val anchorPane = fxmlLoader.load<AnchorPane>()
         listView.items.add(0, anchorPane)
+        fxmlLoader.getController<ApiListItemController>().apply {
+            this.data = apiData
+        }
     }
-
-
 }
 
 open class ApiListItemController {
@@ -91,14 +94,32 @@ open class ApiListItemController {
 
     @FXML
     lateinit var tooltipLabel: Label
-
+    var data: ApiData? = null
+        set(value) {
+            field = value
+            apiMethod.text = value?.method
+            apiName.text = value?.name
+        }
+    companion object{
+        var apiClickListener: ((apiData: ApiData) -> Unit)? = null
+    }
     @FXML
     fun initialize() {
-        apiMethod.text = "GET"
-        apiName.text = "获取用户信息"
+        apiMethod.text = "POST"
+        apiMethod.styleClass.add("post")
+        apiMethod.textProperty().addListener { _, _, newValue ->
+            apiMethod.styleClass.remove("post")
+            apiMethod.styleClass.add(newValue.lowercase())
+        }
+        apiName.text = "新建接口"
         // 设置 AnchorPane 的布局参数
         AnchorPane.setLeftAnchor(apiItemHBox, 0.0)
         AnchorPane.setRightAnchor(apiItemHBox, 0.0)
+        apiListItemRoot.onMouseClicked = EventHandler {
+            data?.apply {
+                apiClickListener?.invoke(this)
+            }
+        }
     }
 }
 
@@ -110,18 +131,17 @@ open class ApiNewPopupController {
     fun initialize() {
 
     }
-
     companion object {
         private var popup = Popup()
-
+        private var apiClickListener: ((apiData: ApiData) -> Unit)? = null
         init {
             val root = FXMLLoader("api-new-popup.fxml".getUrl())
             val dialogPane = root.load<AnchorPane>()
             popup.content.add(dialogPane)
             popup.isAutoHide = true
         }
-
-        fun showDropdownMenu(target: Node) {
+        fun showDropdownMenu(target: Node,clickListener: ((apiData: ApiData) -> Unit)?) {
+            apiClickListener = clickListener
             if (!popup.isShowing) {
                 // 获取按钮的边界
                 val boundsInLocal = target.boundsInLocal
@@ -144,6 +164,9 @@ open class ApiNewPopupController {
 
     @FXML
     fun addNewInterface() {
-        println("1")
+        apiClickListener?.invoke(ApiData(-1, "新建接口", "", "POST", "application/json"))
+        if (popup.isShowing) {
+            popup.hide()
+        }
     }
 }

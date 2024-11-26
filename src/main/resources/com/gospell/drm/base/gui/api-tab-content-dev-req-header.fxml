@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gospell.drm.base.gui.view.CustomTableView?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns="http://javafx.com/javafx"
+      VBox.vgrow="ALWAYS"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:id="rootVBox"
+      fx:controller="com.gospell.drm.base.gui.controller.ApiTabContentDevReqHeaderController">
+    <CustomTableView fx:id="headerTableView" styleClass="header-custom-table"/>
+</VBox>
